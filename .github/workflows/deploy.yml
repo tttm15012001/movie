@@ -1,0 +1,55 @@
+name: Build and Deploy Frontend to S3 + CloudFront
+
+on:
+  push:
+    branches: [ master ]
+
+permissions:
+  id-token: write   # for OIDC auth
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::703671925000:role/RyanMovieFeDeployRole
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync build folder to S3
+        run: |
+          aws s3 sync build/ s3://${{ secrets.S3_BUCKET_NAME }} \
+            --delete \
+            --cache-control max-age=0,no-cache,no-store,must-revalidate
+
+      - name: Get CloudFront Distribution ID dynamically
+        id: get-cf-id
+        run: |
+          CF_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Aliases.Items[?@=='${{ secrets.FE_CDN_DOMAIN }}']].Id | [0]" \
+            --output text)
+          echo "CLOUDFRONT_ID=$CF_ID" >> $GITHUB_ENV
+          echo "Found CloudFront ID: $CF_ID"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_ID \
+            --paths "/*"
