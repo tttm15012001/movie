@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 permissions:
-  id-token: write   # need for OIDC
+  id-token: write   # for OIDC auth
   contents: read
 
 jobs:
