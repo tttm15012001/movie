@@ -11,7 +11,7 @@ function WatchPage({ movieName }) {
 
     return (
         <div>
-            <h2>Now Watching</h2>
+            <h2>Enjoy Your Time</h2>
             {url ? <VideoPlayer url={url} /> : <p>Loading...</p>}
         </div>
     );
