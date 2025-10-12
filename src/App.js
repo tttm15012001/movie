@@ -1,15 +1,19 @@
-import React from "react";
-import WatchPage from "./pages/WatchPage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Home from "./pages/Home"
+import MovieView from "./pages/MovieView"
+import "./App.css"
 
 function App() {
-  const movieName = "anime";
-
-  return (
-      <div style={{ textAlign: "center", padding: "20px" }}>
-        <h1>🎬 Ryan Movie</h1>
-        <WatchPage movieName={movieName} />
-      </div>
-  );
+    return (
+        <Router>
+            <div className="app">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/movie/:tag" element={<MovieView />} />
+                </Routes>
+            </div>
+        </Router>
+    )
 }
 
-export default App;
+export default App

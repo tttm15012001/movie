@@ -1,0 +1,5 @@
+.movie-list-page {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+    padding: 40px 20px;
+}
