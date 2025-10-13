@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 
 function MovieCard({ movie }) {
     return (
-        <Link to={`/movie/${movie.tag}`} className="movie-card">
+        <Link to={`/movie/preview/${movie.tag}`} className="movie-card">
             <div className="movie-poster">
                 <img src={movie.poster || "/placeholder.svg"} alt={movie.title} />
                 <div className="tag-bar">

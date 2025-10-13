@@ -7,8 +7,7 @@
 
 body {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif;
-    background-color: #0f0c29;
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    background-color: #0f0f0f;
     color: #fff;
     min-height: 100vh;
 }
@@ -99,15 +98,35 @@ body {
 
 /* Movies Grid */
 .movies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
-    max-width: 1400px;
+    width: 100%;
+    max-width: 1900px;
+    animation: fadeInUp .5s ease-out forwards;
     margin: 0 auto;
-    padding: 0 1rem 2rem;
+    padding: 0 50px;
+}
+
+.topics_list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 3px;
+    margin-top: 2rem;
+}
+
+.topics_list.single {
+    border-radius: 1rem;
+    background: rgb(40, 43, 58);
+    background: linear-gradient(0deg, rgba(40, 43, 58, 0) 20%, rgba(40, 43, 58, 1));
+    padding: 2rem;
+    gap: 2rem;
 }
 
 .movie-card {
+    flex-shrink: 0;
+    width: 16%;
+    height: 100%;
+    position: relative;
+    transition-property: transform;
     text-decoration: none;
     color: inherit;
     border-radius: 12px;

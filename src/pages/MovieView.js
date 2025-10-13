@@ -1,7 +1,7 @@
-"use client"
+import React from "react"
 import { useParams, Link } from "react-router-dom"
 import { movies } from "../data/movies"
-import WatchPage from "./WatchPage";
+import VideoPlayer from "../components/VideoPlayer"
 
 function MovieView() {
     const { tag } = useParams()
@@ -9,53 +9,120 @@ function MovieView() {
 
     if (!movie) {
         return (
-            <div className="movie-view">
-                <div className="not-found">
-                    <h2>Movie not found</h2>
-                    <Link to="/" className="back-button">
-                        ← Back to Home
-                    </Link>
-                </div>
+            <div className="not-found">
+                <h2>Movie not found</h2>
+                <Link to="/" className="back-button">
+                    Back to Home
+                </Link>
             </div>
         )
     }
 
     return (
         <div className="movie-view">
-            <Link to="/" className="back-button">
-                ← Back to Home
-            </Link>
-
-            <div className="movie-header">
-                <h1 className="movie-view-title">{movie.title}</h1>
-                <div className="movie-view-meta">
-                    <span className="meta-item">⭐ {movie.rating}</span>
-                    <span className="meta-item">{movie.year}</span>
-                    <span className="meta-item">{movie.genre}</span>
-                    <span className="meta-item">⏱️ {movie.duration}</span>
+            {/* Banner Section */}
+            <div
+                className="movie-banner"
+                style={{
+                    backgroundImage: `url(${movie.banner})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    position: "relative",
+                    height: "400px",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                }}
+            >
+                <div
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "rgba(0, 0, 0, 0.5)",
+                    }}
+                />
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: "20px",
+                        left: "40px",
+                        color: "#fff",
+                    }}
+                >
+                    <h1 style={{ fontSize: "2.5rem", fontWeight: 700 }}>{movie.title}</h1>
+                    <p style={{ fontSize: "1.1rem", color: "#ccc" }}>{movie.englishTitle}</p>
                 </div>
             </div>
 
-            <WatchPage movieName={movie.tag} />
+            {/* Main Content */}
+            <div
+                style={{
+                    display: "flex",
+                    gap: "2rem",
+                    marginTop: "2rem",
+                    flexWrap: "wrap",
+                }}
+            >
+                {/* Poster */}
+                <div style={{ flex: "0 0 280px" }}>
+                    <img
+                        src={movie.poster}
+                        alt={movie.title}
+                        style={{
+                            width: "100%",
+                            borderRadius: "12px",
+                            objectFit: "cover",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                        }}
+                    />
+                    <div style={{ marginTop: "1rem" }}>
+                        <Link to="/" className="back-button">
+                            ← Back
+                        </Link>
+                    </div>
+                </div>
 
-            <div className="movie-details">
-                <h2>Overview</h2>
-                <p className="movie-description">{movie.description}</p>
+                {/* Details */}
+                <div style={{ flex: "1", color: "#e1e1e1" }}>
+                    <h2 style={{ marginBottom: "0.5rem", fontSize: "1.8rem" }}>{movie.title}</h2>
+                    <p style={{ fontSize: "1rem", color: "#b8b8d1" }}>{movie.description}</p>
+
+                    <div
+                        style={{
+                            marginTop: "1rem",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0.3rem",
+                            fontSize: "0.95rem",
+                        }}
+                    >
+            <span>
+              <strong>Genre:</strong> {movie.genre}
+            </span>
+                        <span>
+              <strong>Year:</strong> {movie.year}
+            </span>
+                        <span>
+              <strong>Duration:</strong> {movie.duration}
+            </span>
+                        <span>
+              <strong>Director:</strong> {movie.director}
+            </span>
+                        <span>
+              <strong>Cast:</strong> {movie.cast.join(", ")}
+            </span>
+                        <span>
+              <strong>Country:</strong> {movie.country}
+            </span>
+                        <span>
+              <strong>Rating:</strong> ⭐ {movie.rating}
+            </span>
+                    </div>
+                </div>
             </div>
 
-            <div className="related-section">
-                <h2>More Like This</h2>
-                <div className="related-movies">
-                    {movies
-                        .filter((m) => m.genre === movie.genre && m.id !== movie.id)
-                        .slice(0, 4)
-                        .map((relatedMovie) => (
-                            <Link key={relatedMovie.id} to={`/movie/${relatedMovie.id}`} className="related-movie">
-                                <img src={relatedMovie.poster || "/placeholder.svg"} alt={relatedMovie.title} />
-                                <p>{relatedMovie.title}</p>
-                            </Link>
-                        ))}
-                </div>
+            {/* Video Player */}
+            <div style={{ marginTop: "3rem" }}>
+                <VideoPlayer src={movie.videoUrl} poster={movie.poster} />
             </div>
         </div>
     )

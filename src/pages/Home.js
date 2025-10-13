@@ -46,9 +46,11 @@ function Home() {
             </div>
 
             <div className="movies-grid">
-                {filteredMovies.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
-                ))}
+                <div className="topics_list single">
+                    {filteredMovies.map((movie) => (
+                        <MovieCard key={movie.id} movie={movie} />
+                    ))}
+                </div>
             </div>
 
             {filteredMovies.length === 0 && (
