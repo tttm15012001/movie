@@ -1,18 +1,42 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import MovieCard from "../components/MovieCard"
-import { movies } from "../data/movies"
 
 function Home() {
+    const [categories, setCategories] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState("")
     const [selectedGenre, setSelectedGenre] = useState("All")
 
-    const genres = ["All", ...new Set(movies.map((movie) => movie.genre))]
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await fetch("http://localhost:8080/movie/top-list")
+                if (!response.ok) throw new Error("Failed to fetch movies")
+                const data = await response.json()
+                setCategories(data)
+            } catch (err) {
+                setError(err.message)
+            } finally {
+                setLoading(false)
+            }
+        }
 
-    const filteredMovies = movies.filter((movie) => {
+        fetchMovies()
+    }, [])
+
+    if (loading) return <p className="text-center mt-10">Đang tải dữ liệu phim...</p>
+    if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
+
+    // Collect all movies to extract genres
+    const allMovies = categories.flatMap((cat) => cat.movies || [])
+    const genres = ["All", ...new Set(allMovies.flatMap((m) => m.genre || []))]
+
+    const filteredMovies = allMovies.filter((movie) => {
         const matchesSearch = movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesGenre = selectedGenre === "All" || movie.genre === selectedGenre
+        const matchesGenre = selectedGenre === "All" || movie.genre.includes(selectedGenre)
         return matchesSearch && matchesGenre
     })
 
@@ -45,17 +69,38 @@ function Home() {
                 </div>
             </div>
 
-            <div className="movies-grid">
-                <div className="topics_list single">
-                    {filteredMovies.map((movie) => (
-                        <MovieCard key={movie.id} movie={movie} />
-                    ))}
+            {searchTerm || selectedGenre !== "All" ? (
+                <div className="movies-grid">
+                    <div className="topics_list single">
+                        {filteredMovies.length > 0 ? (
+                            filteredMovies.map((movie) => (
+                                <MovieCard key={movie.id} movie={movie} />
+                            ))
+                        ) : (
+                            <div className="no-results">
+                                <p>No movies found. Try a different search or filter.</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className="movies-grid">
+                    {categories.map((cat) => (
+                        <div className="topics_list single">
+                            <div className="category-header">
+                                <div className="category-left">
+                                    <h2 className="category-title">{cat.category.name}</h2>
+                                    <a className="view-all" href={`/category/${cat.category.id}`}>Xem toàn bộ →</a>
+                                </div>
 
-            {filteredMovies.length === 0 && (
-                <div className="no-results">
-                    <p>No movies found. Try a different search or filter.</p>
+                                <div className="movie-card-container">
+                                    {cat.movies.map((movie) => (
+                                        <MovieCard key={movie.id} movie={movie}/>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>
