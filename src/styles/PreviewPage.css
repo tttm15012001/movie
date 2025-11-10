@@ -318,7 +318,7 @@ body {
 
                             .episodes-grid {
                                 display: grid;
-                                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
                                 gap: 12px;
 
                                 .episode-btn {
@@ -499,18 +499,44 @@ body {
 
     /* Responsive */
     @media (max-width: 1024px) {
-        .content-wrapper {
-            flex-direction: column;
-        }
 
-        .left-sidebar {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-        }
+        .main-content {
 
-        .cast-grid {
-            grid-template-columns: repeat(6, 1fr);
+            .content-wrapper {
+                flex-direction: column;
+
+                .main-area {
+
+                    .action-buttons {
+                        justify-content: center;
+                    }
+
+                    .tabs-container {
+
+                        .tabs {
+                            justify-content: center;
+                        }
+                    }
+                }
+
+                .left-sidebar {
+                    width: 100%;
+                    max-width: 400px;
+                    margin: 0 auto;
+
+                    .movie-poster {
+                        width: 80%;
+                        margin: auto;
+                    }
+
+                    .cast-section {
+
+                        .cast-grid {
+                            grid-template-columns: repeat(6, 1fr);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -522,42 +548,111 @@ body {
         .main-content {
             margin-top: -100px;
             padding: 0 16px;
-        }
 
-        .tabs {
-            overflow-x: auto;
-        }
+            .content-wrapper {
 
-        .tab {
-            white-space: nowrap;
-            flex: none;
-            min-width: 120px;
-        }
+                .main-area {
 
-        .episodes-grid {
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-        }
+                    .action-buttons {
+                        justify-content: center;
+                        flex-wrap: wrap;
+                    }
 
-        .action-buttons {
-            flex-wrap: wrap;
-        }
+                    .tabs-container {
 
-        .cast-grid {
-            grid-template-columns: repeat(4, 1fr);
+                        .tabs {
+                            justify-content: center;
+                            overflow-x: auto;
+
+                            .tab {
+                                white-space: nowrap;
+                                flex: none;
+                                min-width: 120px;
+                            }
+                        }
+
+                        .episodes-content {
+
+                            .episodes-grid {
+                                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                            }
+                        }
+                    }
+                }
+
+                .left-sidebar {
+
+                    .movie-poster {
+                        width: 60%;
+                    }
+
+                    .cast-section {
+
+                        .cast-grid {
+                            grid-template-columns: repeat(4, 1fr);
+                        }
+                    }
+                }
+            }
         }
     }
 
     @media (max-width: 480px) {
-        .movie-title {
-            font-size: 20px;
+        .hero-section {
+            height: 300px;
         }
 
-        .cast-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
+        .main-content {
+            margin-top: -100px;
+            padding: 0 16px;
 
-        .episodes-grid {
-            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            .content-wrapper {
+
+                .main-area {
+
+                    .action-buttons {
+                        justify-content: center;
+                        flex-wrap: wrap;
+
+                        .btn-primary {
+                            font-size: 14px;
+                            padding: 8px 20px;
+                        }
+
+                        .btn-icon {
+                            width: 36px;
+                            height: 36px;
+                        }
+                    }
+
+                    .tabs-container {
+
+                        .episodes-content {
+
+                            .episodes-grid {
+                                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+                            }
+                        }
+                    }
+                }
+
+                .left-sidebar {
+                    .movie-title {
+                        font-size: 20px;
+                    }
+
+                    .movie-poster {
+                        width: 45%;
+                    }
+
+                    .cast-section {
+
+                        .cast-grid {
+                            grid-template-columns: repeat(3, 1fr);
+                        }
+                    }
+                }
+            }
         }
     }
 }
