@@ -1,50 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import {Link, useParams} from "react-router-dom"
 import "../styles/PreviewPage.css"
-
-const fallbackData = {
-    id: 1,
-    searchTitle: "gia-dinh-bao-to",
-    releaseYear: 2024,
-    voteAverage: 8.8,
-    metadataId: 101,
-    numberOfEpisodes: 21,
-    categories: ["Hài", "Gia Đình", "Tâm Lý"],
-    metadata: {
-        id: 101,
-        movieId: 1,
-        title: "Gia Đình Bảo Tổ",
-        originalTitle: "Original Title",
-        description:
-            "Câu chuyện xoay quanh gia đình Bảo Tổ với những tình huống hài hước và cảm động trong cuộc sống hàng ngày.",
-        numberOfEpisodes: 21,
-        voteAverage: 8.8,
-        voteCount: 1200,
-        popularity: 100,
-        posterPath: "/thumbnail/gia_dinh_bao_to.png",
-        backdropPath: "/banners/gia_dinh_bao_to.png",
-        releaseDate: "2024-01-01",
-        country: "Việt Nam",
-        originalLanguage: "vi",
-        genre: ["Hài", "Gia Đình", "Tâm Lý"],
-        actors: [
-            { id: 1, name: "Trấn Thành", profilePath: "/actors/tran_thanh.jpg" },
-            { id: 2, name: "Lê Giang", profilePath: "/actors/le_giang.jpg" },
-            { id: 3, name: "Tuấn Trần", profilePath: "/actors/tuan_tran.jpg" },
-            { id: 4, name: "NSND Hồng Vân", profilePath: "/actors/hong_van.jpg" },
-            { id: 5, name: "Lê Dương Bảo Lâm", profilePath: "/actors/bao_lam.jpg" },
-        ],
-        status: "Đang chiếu",
-    },
-}
+import {dummyData} from "../lib/dummyData";
 
 export default function PreviewPage() {
     const { movieId } = useParams()
     const [movieData, setMovieData] = useState(null)
     const [activeTab, setActiveTab] = useState("episodes")
-    const actorBasePath = "https://image.tmdb.org/t/p/w154"
+    const actorImageBase = "https://image.tmdb.org/t/p/w154"
 
     useEffect(() => {
         if (!movieId) return
@@ -57,11 +22,11 @@ export default function PreviewPage() {
                     setMovieData(data)
                 } else {
                     console.warn(`HTTP error ${res.status}, using fallback data`)
-                    setMovieData(fallbackData)
+                    setMovieData(dummyData)
                 }
             } catch (error) {
                 console.warn("Fetch failed, using fallback data:", error.message)
-                setMovieData(fallbackData)
+                setMovieData(dummyData)
             }
         }
 
@@ -154,7 +119,7 @@ export default function PreviewPage() {
                                     actors.map((actor, index) => (
                                         <div key={index} className="cast-member">
                                             <img
-                                                src={actorBasePath + actor.profilePath}
+                                                src={actorImageBase + actor.profilePath}
                                                 alt={actor.name}
                                                 className="cast-avatar"
                                             />
@@ -169,11 +134,13 @@ export default function PreviewPage() {
                     </aside>
 
                     <main className="main-area">
-                    <div className="action-buttons">
-                            <button className="btn-primary">
-                                <span className="play-icon">▶</span>
-                                Watch Now
-                            </button>
+                        <div className="action-buttons">
+                            <Link to={`/movie/view/${movieId}`} className={"watch-now"}>
+                                <button className="btn-primary">
+                                    <span className="play-icon">▶</span>
+                                    Watch Now
+                                </button>
+                            </Link>
                             <button className="btn-icon" title="Love this film">
                                 <span>♥</span>
                             </button>
