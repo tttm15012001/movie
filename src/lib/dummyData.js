@@ -1,7 +1,7 @@
 export const dummyData = {
     id: 1,
     searchTitle: "gia-dinh-bao-to",
-    releaseYear: 2025,
+    releaseDate: 2025,
     voteAverage: 8.667,
     metadataId: 101,
     numberOfEpisodes: 12,

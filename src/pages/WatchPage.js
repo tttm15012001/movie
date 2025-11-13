@@ -70,7 +70,7 @@ export default function WatchPage() {
     const actors = meta.actors || []
     const genres = meta.genre || []
     const totalEpisodes =
-        movieData.numberOfEpisodes || meta.numberOfEpisodes || 0
+        meta.numberOfEpisodes ?? 0
 
     return (
         <div className="watch-page">
@@ -106,12 +106,10 @@ export default function WatchPage() {
                                         </span>
                                     </span>
                                             <span className="year">
-                                        {movieData.releaseYear || meta.releaseDate || "—"}
+                                        {meta.releaseDate ?? "—"}
                                     </span>
                                             <span className="duration">
-                                        {movieData.numberOfEpisodes
-                                            ? `${movieData.numberOfEpisodes} episodes`
-                                            : "Updating"}
+                                        {meta.numberOfEpisodes ?? "Updating"}
                                     </span>
                                 </div>
 

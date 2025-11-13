@@ -314,6 +314,8 @@ body {
                     /* Tab Content */
                     .tab-content {
                         padding: 24px;
+                        font-size: 16px;
+                        line-height: 30px;
 
                         .episodes-content {
                             display: flex;
@@ -323,7 +325,10 @@ body {
                             .episodes-grid {
                                 display: grid;
                                 grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-                                gap: 12px;
+                                gap: 20px;
+                                max-height: 170px;
+                                overflow-y: scroll;
+                                padding: 0 15px;
 
                                 .episode-btn {
                                     background-color: rgba(255, 255, 255, 0.05);
@@ -377,6 +382,12 @@ body {
                                     font-size: 14px;
                                 }
                             }
+                        }
+
+                        .collection-content, .comments-content {
+                            text-align: center;
+                            padding: 40px;
+                            color: #666;
                         }
                     }
                 }
@@ -492,13 +503,6 @@ body {
 
     .comment-action:hover {
         color: #fff;
-    }
-
-    /* Collection Content */
-    .collection-content {
-        text-align: center;
-        padding: 40px;
-        color: #666;
     }
 
     /* Responsive */

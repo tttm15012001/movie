@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from "./pages/Home"
-import MovieView from "./pages/MovieView"
 import "./App.css"
 import PreviewPage from "./pages/PreviewPage";
+import WatchPage from "./pages/WatchPage";
 
 function App() {
     return (
@@ -11,7 +11,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/movie/preview/:movieId" element={<PreviewPage />} />
-                    <Route path="/movie/:tag" element={<MovieView />} />
+                    <Route path="/movie/view/:movieId" element={<WatchPage />} />
                 </Routes>
             </div>
         </Router>

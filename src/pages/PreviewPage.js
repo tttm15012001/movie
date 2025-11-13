@@ -5,18 +5,23 @@ import {Link, useParams} from "react-router-dom"
 import "../styles/PreviewPage.css"
 import {dummyData} from "../lib/dummyData";
 
+const IMAGE_BASE_URL = process.env.REACT_APP_IMAGE_BASE_URL
+const ACTOR_IMAGE_BASE_URL = IMAGE_BASE_URL + process.env.REACT_APP_ACTOR_IMAGE_WIDTH
+const POSTER_BASE_URL = IMAGE_BASE_URL + process.env.REACT_APP_POSTER_WIDTH
+const BACKDROP_BASE_URL = IMAGE_BASE_URL + process.env.REACT_APP_BACKDROP_WIDTH
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export default function PreviewPage() {
     const { movieId } = useParams()
     const [movieData, setMovieData] = useState(null)
     const [activeTab, setActiveTab] = useState("episodes")
-    const actorImageBase = "https://image.tmdb.org/t/p/w154"
 
     useEffect(() => {
         if (!movieId) return
 
         const fetchMovieData = async () => {
             try {
-                const res = await fetch(`https://api.ryan-healthcare.com/movie/${movieId}`)
+                const res = await fetch(`${API_BASE_URL}/movie/${movieId}`)
                 if (res.ok) {
                     const data = await res.json()
                     setMovieData(data)
@@ -51,7 +56,7 @@ export default function PreviewPage() {
             <div className="hero-section">
                 <div className="hero-overlay"></div>
                 <img
-                    src={meta.backdropPath}
+                    src={POSTER_BASE_URL + meta.backdropPath}
                     alt={meta.title}
                     className="hero-image"
                 />
@@ -62,13 +67,13 @@ export default function PreviewPage() {
                     <aside className="left-sidebar">
                         <div className="movie-poster">
                             <img
-                                src={meta.posterPath}
+                                src={BACKDROP_BASE_URL + meta.posterPath}
                                 alt={meta.title}
                             />
                         </div>
 
-                        <h2 className="movie-title">{meta.title || "Updating"}</h2>
-                        <h2 className="movie-original-title">{meta.originalTitle || "Updating"}</h2>
+                        <h2 className="movie-title">{meta.title ?? "Updating"}</h2>
+                        <h2 className="movie-original-title">{meta.originalTitle ?? "Updating"}</h2>
 
                         <div className="movie-meta">
                             <span className="rating">
@@ -76,16 +81,14 @@ export default function PreviewPage() {
                                     {meta.voteAverage ? meta.voteAverage.toFixed(1) : "N/A"}
                                 </span>
                                 <span className="rating-total">
-                                    /{meta.voteCount ? meta.voteCount.toLocaleString() : "0"}
+                                    ({meta.voteCount ? meta.voteCount.toLocaleString() : "0"})
                                 </span>
                             </span>
                             <span className="year">
-                                {movieData.releaseYear || meta.releaseDate || "—"}
+                                {meta.releaseDate ?? "—"}
                             </span>
                             <span className="duration">
-                                {movieData.numberOfEpisodes
-                                    ? `${movieData.numberOfEpisodes} episodes`
-                                    : "Updating"}
+                                {meta.numberOfEpisodes ?? "Updating"} episodes
                             </span>
                         </div>
 
@@ -119,7 +122,7 @@ export default function PreviewPage() {
                                     actors.map((actor, index) => (
                                         <div key={index} className="cast-member">
                                             <img
-                                                src={actorImageBase + actor.profilePath}
+                                                src={ACTOR_IMAGE_BASE_URL + actor.profilePath}
                                                 alt={actor.name}
                                                 className="cast-avatar"
                                             />
@@ -168,8 +171,8 @@ export default function PreviewPage() {
                                     Episodes
                                 </button>
                                 <button
-                                    className={`tab ${activeTab === "info" ? "active" : ""}`}
-                                    onClick={() => setActiveTab("info")}
+                                    className={`tab ${activeTab === "description" ? "active" : ""}`}
+                                    onClick={() => setActiveTab("description")}
                                 >
                                     Introduction
                                 </button>
@@ -192,7 +195,7 @@ export default function PreviewPage() {
                                     <div className="episodes-content">
                                         <div className="episodes-grid">
                                             {Array.from(
-                                                { length: movieData.numberOfEpisodes || 1 },
+                                                { length: meta.numberOfEpisodes ?? 1 },
                                                 (_, i) => (
                                                     <button key={i} className="episode-btn">
                                                         Epi {i + 1}
@@ -216,16 +219,15 @@ export default function PreviewPage() {
                                     </div>
                                 )}
 
-                                {activeTab === "info" && (
-                                    <div className="info-content">
-                                        <h3>Giới thiệu</h3>
+                                {activeTab === "description" && (
+                                    <div className="description-content">
                                         <p>{meta.description || "No description"}</p>
                                     </div>
                                 )}
 
                                 {activeTab === "comments" && (
                                     <div className="comments-content">
-                                        <p>Not implemented yet</p>
+                                        <p>No comments</p>
                                     </div>
                                 )}
 

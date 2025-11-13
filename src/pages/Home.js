@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import MovieCard from "../components/MovieCard"
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 function Home() {
     const [categories, setCategories] = useState([])
     const [loading, setLoading] = useState(true)
@@ -13,7 +15,7 @@ function Home() {
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const response = await fetch("http://localhost:8080/movie/top-list")
+                const response = await fetch(`${API_BASE_URL}/movie/top-list`)
                 if (!response.ok) throw new Error("Failed to fetch movies")
                 const data = await response.json()
                 setCategories(data)
@@ -27,16 +29,42 @@ function Home() {
         fetchMovies()
     }, [])
 
-    if (loading) return <p className="text-center mt-10">Đang tải dữ liệu phim...</p>
+    if (loading) return <p className="text-center mt-10">Loading movie data ...</p>
     if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
 
-    // Collect all movies to extract genres
-    const allMovies = categories.flatMap((cat) => cat.movies || [])
-    const genres = ["All", ...new Set(allMovies.flatMap((m) => m.genre || []))]
+    const allMovies = categories.flatMap(cat => cat.movies || [])
 
-    const filteredMovies = allMovies.filter((movie) => {
+    const extractPrimaryGenre = (movie) => {
+        const primaryId = movie.primaryCategory;
+
+        const match = movie.categories?.find(obj => {
+            const id = Number(Object.keys(obj)[0]);
+            return id === primaryId;
+        });
+
+        if (!match) return null;
+
+        const id = Number(Object.keys(match)[0]);
+        const name = match[id];
+
+        return { id, name };
+    };
+
+    const allGenres = allMovies.flatMap(extractPrimaryGenre)
+
+    const uniqueGenres = [
+        "All",
+        ...Array.from(
+            new Map(allGenres.map(g => [g.id, g.name])).entries()
+        ).map(([id, name]) => ({ id, name }))
+    ]
+
+    const filteredMovies = allMovies.filter(movie => {
         const matchesSearch = movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesGenre = selectedGenre === "All" || movie.genre.includes(selectedGenre)
+        const matchesGenre =
+            selectedGenre === "All" ||
+            movie.primaryCategory === selectedGenre
+
         return matchesSearch && matchesGenre
     })
 
@@ -57,30 +85,45 @@ function Home() {
                 />
 
                 <div className="genre-filters">
-                    {genres.map((genre) => (
-                        <button
-                            key={genre}
-                            className={`genre-button ${selectedGenre === genre ? "active" : ""}`}
-                            onClick={() => setSelectedGenre(genre)}
-                        >
-                            {genre}
-                        </button>
-                    ))}
+                    {uniqueGenres.map(genre =>
+                        genre === "All" ? (
+                            <button
+                                key="All"
+                                className={`genre-button ${selectedGenre === "All" ? "active" : ""}`}
+                                onClick={() => setSelectedGenre("All")}
+                            >
+                                All
+                            </button>
+                        ) : (
+                            <button
+                                key={genre.id}
+                                className={`genre-button ${selectedGenre === genre.id ? "active" : ""}`}
+                                onClick={() => setSelectedGenre(genre.id)}
+                            >
+                                {genre.name}
+                            </button>
+                        )
+                    )}
                 </div>
             </div>
 
             {searchTerm || selectedGenre !== "All" ? (
                 <div className="movies-grid">
                     <div className="topics_list single">
-                        {filteredMovies.length > 0 ? (
-                            filteredMovies.map((movie) => (
-                                <MovieCard key={movie.id} movie={movie} />
-                            ))
-                        ) : (
-                            <div className="no-results">
-                                <p>No movies found. Try a different search or filter.</p>
+                        <div className="category-header">
+                            <div className="category-left">
+                                {/*<h2 className="category-title">{cat.category.name}</h2>*/}
+                                {/*<a className="view-all" href={`/category/${cat.category.id}`}>Xem toàn bộ </a>*/}
                             </div>
-                        )}
+
+                            <div className="movie-card-container">
+                                {filteredMovies.length > 0 ? (
+                                    filteredMovies.map((movie) => <MovieCard key={movie.id} movie={movie}/>)
+                                ) : (
+                                    <div className="no-results"><p>No movies found...</p></div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             ) : (
@@ -89,8 +132,8 @@ function Home() {
                         <div className="topics_list single">
                             <div className="category-header">
                                 <div className="category-left">
-                                    <h2 className="category-title">{cat.category.name}</h2>
-                                    <a className="view-all" href={`/category/${cat.category.id}`}>Xem toàn bộ →</a>
+                                <h2 className="category-title">{cat.category.name}</h2>
+                                    <a className="view-all" href={`/category/${cat.category.id}`}>View all </a>
                                 </div>
 
                                 <div className="movie-card-container">
