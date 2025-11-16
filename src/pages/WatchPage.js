@@ -40,20 +40,25 @@ export default function WatchPage() {
 
     useEffect(() => {
         if (!movieData?.searchTitle) return
+
         const fetchManifest = async () => {
             try {
                 const res = await fetch(`${baseUrl}/${movieData.searchTitle}/manifest`, {
                     credentials: "include",
                 })
+
                 if (res.ok) {
                     const data = await res.json()
                     setManifestUrl(data.manifestUrl)
+                } else {
+                    console.warn(`HTTP error ${res.status} while fetching manifest`)
                 }
-            } catch {
-                console.warn("Manifest fetch failed")
+            } catch (error) {
+                console.warn("Manifest fetch failed:", error.message)
             }
         }
-        fetchManifest()
+
+        void fetchManifest()
     }, [movieData])
 
     if (!movieData) {

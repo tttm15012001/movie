@@ -16,17 +16,22 @@ function Home() {
         const fetchMovies = async () => {
             try {
                 const response = await fetch(`${API_BASE_URL}/movie/top-list`)
-                if (!response.ok) throw new Error("Failed to fetch movies")
-                const data = await response.json()
-                setCategories(data)
+                if (response.ok) {
+                    const data = await response.json()
+                    setCategories(data)
+                } else {
+                    console.warn(`HTTP error ${response.status}`)
+                    setError("Failed to fetch movies")
+                }
             } catch (err) {
+                console.warn("Fetch movies failed:", err.message)
                 setError(err.message)
             } finally {
                 setLoading(false)
             }
         }
 
-        fetchMovies()
+        void fetchMovies()
     }, [])
 
     if (loading) return <p className="text-center mt-10">Loading movie data ...</p>
@@ -71,7 +76,7 @@ function Home() {
     return (
         <div className="home">
             <header className="header">
-                <h1 className="site-title">🎬 MovieFlix</h1>
+                <h1 className="site-title">Ryan Theater</h1>
                 <p className="site-subtitle">Watch unlimited movies, anytime</p>
             </header>
 

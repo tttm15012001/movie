@@ -12,10 +12,6 @@ function MovieCard({ movie }) {
                 <div className="movie-card">
                     <div className="movie-poster">
                         <img src={backdrop} alt={movie.title}/>
-                        {/*<div className="tag-bar">*/}
-                        {/*    {movie.episodes && <div className="tag episode">PD. {movie.episodes}</div>}*/}
-                        {/*    {movie.subType && <div className="tag sub">TM. {movie.subType}</div>}*/}
-                        {/*</div>*/}
                     </div>
                     <div className="movie-info">
                         <p className="movie-title">{movie.title}</p>
